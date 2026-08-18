@@ -12,8 +12,8 @@ import java.util.Optional;
 
 public interface TicketRepository extends JpaRepository<Ticket,Long> {
     Optional<Ticket> findByReference(String reference);
-    List<Ticket> findByStatus(TicketStatus status);
-    List<Ticket> findByPriority(TicketPriority priority);
-    List<Client> findByClientId(Long clientId);
-    List<User> findByUserId(Long userId);
+    List<Ticket> findByStatut(TicketStatus statut);
+    List<Ticket> findByPriorite(TicketPriority priorite);
+    List<Ticket> findByClientId(Long clientId);
+    List<Ticket> findByUserId(Long userId);
 }
