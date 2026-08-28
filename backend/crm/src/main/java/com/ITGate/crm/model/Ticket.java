@@ -1,7 +1,7 @@
-package com.yourcompany.crm.model;
+package com.ITGate.crm.model;
 
-import com.yourcompany.crm.enums.TicketPriority;
-import com.yourcompany.crm.enums.TicketStatus;
+import com.ITGate.crm.enums.TicketPriority;
+import com.ITGate.crm.enums.TicketStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -55,6 +55,7 @@ public class Ticket {
     @PrePersist
     protected void onCreate(){
         this.dateCreation = LocalDateTime.now();
+        this.dateModification = LocalDateTime.now();
     }
 
     @PreUpdate

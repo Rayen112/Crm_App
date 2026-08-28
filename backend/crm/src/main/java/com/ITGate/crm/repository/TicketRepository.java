@@ -1,10 +1,8 @@
-package com.yourcompany.crm.repository;
+package com.ITGate.crm.repository;
 
-import com.yourcompany.crm.enums.TicketPriority;
-import com.yourcompany.crm.enums.TicketStatus;
-import com.yourcompany.crm.model.Client;
-import com.yourcompany.crm.model.Ticket;
-import com.yourcompany.crm.model.User;
+import com.ITGate.crm.enums.TicketPriority;
+import com.ITGate.crm.enums.TicketStatus;
+import com.ITGate.crm.model.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

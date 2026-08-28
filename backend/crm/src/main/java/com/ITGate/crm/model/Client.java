@@ -1,4 +1,4 @@
-package com.yourcompany.crm.model;
+package com.ITGate.crm.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

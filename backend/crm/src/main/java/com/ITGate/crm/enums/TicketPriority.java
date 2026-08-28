@@ -1,4 +1,4 @@
-package com.yourcompany.crm.enums;
+package com.ITGate.crm.enums;
 
 public enum TicketPriority{
     FAIBLE,

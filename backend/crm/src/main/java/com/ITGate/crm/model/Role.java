@@ -1,6 +1,6 @@
-package com.yourcompany.crm.model;
+package com.ITGate.crm.model;
 
-import com.yourcompany.crm.enums.RoleName;
+import com.ITGate.crm.enums.RoleName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

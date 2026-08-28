@@ -1,7 +1,7 @@
-package com.yourcompany.crm.repository;
+package com.ITGate.crm.repository;
 
-import com.yourcompany.crm.enums.RoleName;
-import com.yourcompany.crm.model.Role;
+import com.ITGate.crm.enums.RoleName;
+import com.ITGate.crm.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
