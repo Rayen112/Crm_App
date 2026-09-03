@@ -16,6 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -44,7 +47,7 @@ public class TicketService {
                 .orElseThrow(() ->
                         new ResponseStatusException(
                                 HttpStatus.NOT_FOUND,
-                                "Client not found with id: " + id
+                                "Ticket not found with id: " + id
                         )
                 );
 
@@ -77,13 +80,12 @@ public class TicketService {
 
         ticket.setClient(client);
         ticket.setUser(user);
-        ticket.setReference("TEMP-" + System.currentTimeMillis());
-        Ticket savedTicket = ticketRepository.save(ticket);
-        savedTicket.setReference("TKT-" + String.format("%04d", savedTicket.getId()));
-        // Default status
         if (ticket.getStatut() == null) {
             ticket.setStatut(TicketStatus.NOUVEAU);
         }
+        ticket.setReference("TEMP-" + System.currentTimeMillis());
+        Ticket savedTicket = ticketRepository.save(ticket);
+        savedTicket.setReference("TKT-" + String.format("%04d", savedTicket.getId()));
 
         savedTicket = ticketRepository.save(savedTicket);
         return ticketMapper.toTicketResponseDTO(savedTicket);
@@ -197,6 +199,31 @@ public class TicketService {
     ) {
 
         return ticketRepository.findByUserId(userId)
+                .stream()
+                .map(ticketMapper::toTicketResponseDTO)
+                .toList();
+    }
+
+    public List<TicketResponseDTO> searchTickets(String keyword) {
+        return ticketRepository
+                .findByObjetContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+                        keyword,
+                        keyword
+                )
+                .stream()
+                .map(ticketMapper::toTicketResponseDTO)
+                .toList();
+    }
+
+    public List<TicketResponseDTO> filterByDate(
+            LocalDate dateDebut,
+            LocalDate dateFin) {
+
+        LocalDateTime startDateTime = dateDebut.atStartOfDay();
+        LocalDateTime endDateTime = dateFin.atTime(LocalTime.MAX);
+
+        return ticketRepository
+                .findByDateCreationBetween(startDateTime, endDateTime)
                 .stream()
                 .map(ticketMapper::toTicketResponseDTO)
                 .toList();

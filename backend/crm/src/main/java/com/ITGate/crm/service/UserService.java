@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class UserService {
     final UserRepository userRepository;
     final RoleRepository roleRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public List<UserResponseDTO> getAllUsers(){
         return userRepository.findAll()
@@ -56,6 +58,9 @@ public class UserService {
 
         // DTO → Entity
         User user = userMapper.toUser(request);
+        user.setPassword(
+                passwordEncoder.encode(request.getPassword())
+        );
 
         // Set relationship
         user.setRole(role);
@@ -75,6 +80,13 @@ public class UserService {
 
         // Update basic fields
         userMapper.updateUser(request, user);
+        if (request.getPassword() != null &&
+                !request.getPassword().isBlank()) {
+
+            user.setPassword(
+                    passwordEncoder.encode(request.getPassword())
+            );
+        }
 
         // Update role if provided
         if (request.getRoleId() != null) {

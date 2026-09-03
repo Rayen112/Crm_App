@@ -3,9 +3,12 @@ package com.ITGate.crm.controller;
 import com.ITGate.crm.dto.client.ClientRequestDTO;
 import com.ITGate.crm.dto.client.ClientResponseDTO;
 import com.ITGate.crm.service.ClientService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/clients")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class ClientController {
 
     private final ClientService clientService;
@@ -20,6 +24,7 @@ public class ClientController {
 
     // GET /api/clients
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'AGENT_CRM')")
     public ResponseEntity<List<ClientResponseDTO>> getAllClients() {
 
         return ResponseEntity.ok(
@@ -30,6 +35,7 @@ public class ClientController {
 
     // GET /api/clients/{id}
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'AGENT_CRM')")
     public ResponseEntity<ClientResponseDTO> getClientById(
             @PathVariable Long id) {
 
@@ -41,8 +47,9 @@ public class ClientController {
 
     // POST /api/clients
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'AGENT_CRM')")
     public ResponseEntity<ClientResponseDTO> createClient(
-            @RequestBody ClientRequestDTO request) {
+            @Valid @RequestBody ClientRequestDTO request) {
 
         ClientResponseDTO createdClient =
                 clientService.createClient(request);
@@ -55,9 +62,10 @@ public class ClientController {
 
     // PUT /api/clients/{id}
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'AGENT_CRM')")
     public ResponseEntity<ClientResponseDTO> updateClient(
             @PathVariable Long id,
-            @RequestBody ClientRequestDTO request) {
+            @Valid @RequestBody ClientRequestDTO request) {
 
         return ResponseEntity.ok(
                 clientService.updateClient(id, request)
@@ -67,6 +75,7 @@ public class ClientController {
 
     // DELETE /api/clients/{id}
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteClient(
             @PathVariable Long id) {
 

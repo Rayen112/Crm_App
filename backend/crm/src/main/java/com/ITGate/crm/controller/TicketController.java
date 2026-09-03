@@ -5,17 +5,22 @@ import com.ITGate.crm.dto.ticket.TicketResponseDTO;
 import com.ITGate.crm.enums.TicketPriority;
 import com.ITGate.crm.enums.TicketStatus;
 import com.ITGate.crm.service.TicketService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/tickets")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class TicketController {
 
     private final TicketService ticketService;
@@ -26,6 +31,7 @@ public class TicketController {
     // =========================
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'AGENT_CRM')")
     public ResponseEntity<List<TicketResponseDTO>> getAllTickets() {
 
         return ResponseEntity.ok(
@@ -39,6 +45,7 @@ public class TicketController {
     // =========================
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'AGENT_CRM')")
     public ResponseEntity<TicketResponseDTO> getTicketById(
             @PathVariable Long id) {
 
@@ -53,6 +60,7 @@ public class TicketController {
     // =========================
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'AGENT_CRM')")
     public ResponseEntity<TicketResponseDTO> createTicket(
             @Valid @RequestBody TicketRequestDTO request) {
 
@@ -70,9 +78,10 @@ public class TicketController {
     // =========================
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'AGENT_CRM')")
     public ResponseEntity<TicketResponseDTO> updateTicket(
             @PathVariable Long id,
-            @RequestBody TicketRequestDTO request) {
+            @Valid @RequestBody TicketRequestDTO request) {
 
         return ResponseEntity.ok(
                 ticketService.updateTicket(id, request)
@@ -85,6 +94,7 @@ public class TicketController {
     // =========================
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteTicket(
             @PathVariable Long id) {
 
@@ -101,6 +111,7 @@ public class TicketController {
     // =========================
 
     @GetMapping("/status/{status}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'AGENT_CRM')")
     public ResponseEntity<List<TicketResponseDTO>> getTicketsByStatus(
             @PathVariable TicketStatus status) {
 
@@ -115,6 +126,7 @@ public class TicketController {
     // =========================
 
     @GetMapping("/priority/{priority}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'AGENT_CRM')")
     public ResponseEntity<List<TicketResponseDTO>> getTicketsByPriority(
             @PathVariable TicketPriority priority) {
 
@@ -129,6 +141,7 @@ public class TicketController {
     // =========================
 
     @GetMapping("/client/{clientId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'AGENT_CRM')")
     public ResponseEntity<List<TicketResponseDTO>> getTicketsByClient(
             @PathVariable Long clientId) {
 
@@ -143,11 +156,38 @@ public class TicketController {
     // =========================
 
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<List<TicketResponseDTO>> getTicketsByUser(
             @PathVariable Long userId) {
 
         return ResponseEntity.ok(
                 ticketService.getTicketsByUser(userId)
+        );
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('ADMIN', 'AGENT_CRM')")
+    public ResponseEntity<List<TicketResponseDTO>> searchTickets(
+            @RequestParam String keyword) {
+
+        return ResponseEntity.ok(
+                ticketService.searchTickets(keyword)
+        );
+    }
+
+    @GetMapping("/filter/date")
+    @PreAuthorize("hasAnyRole('ADMIN', 'AGENT_CRM')")
+    public ResponseEntity<List<TicketResponseDTO>> filterByDate(
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate dateDebut,
+
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate dateFin) {
+
+        return ResponseEntity.ok(
+                ticketService.filterByDate(dateDebut, dateFin)
         );
     }
 }
