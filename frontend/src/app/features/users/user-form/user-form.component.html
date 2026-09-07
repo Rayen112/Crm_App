@@ -1,0 +1,192 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/users" class="text-decoration-none">Utilisateurs</a></li>
+          <li class="breadcrumb-item active" aria-current="page">
+            {{ isEditMode ? 'Modifier utilisateur' : 'Nouvel utilisateur' }}
+          </li>
+        </ol>
+      </nav>
+
+      <!-- Form Card -->
+      <div class="card card-crm border-0 shadow-sm p-4 p-md-5">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+          <div>
+            <h2 class="h4 fw-bold text-dark mb-1">
+              <i class="bi me-2 text-danger" [ngClass]="isEditMode ? 'bi-person-check-fill' : 'bi-person-plus-fill'"></i>
+              {{ isEditMode ? 'Modifier le compte utilisateur' : 'Créer un nouvel utilisateur' }}
+            </h2>
+            <p class="text-muted small mb-0">Définissez les informations personnelles, d'authentification et le rôle.</p>
+          </div>
+          <a routerLink="/users" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Retour
+          </a>
+        </div>
+
+        <!-- Alert Error -->
+        <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2" role="alert">
+          <i class="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
+          <div>{{ errorMessage }}</div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="isLoading" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="text-muted mt-2">Chargement de l'utilisateur...</p>
+        </div>
+
+        <form *ngIf="!isLoading" (ngSubmit)="onSubmit()" #userForm="ngForm" novalidate>
+          <div class="row g-3">
+            <!-- Nom -->
+            <div class="col-md-6">
+              <label for="nom" class="form-label fw-semibold">Nom <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                id="nom"
+                name="nom"
+                class="form-control"
+                placeholder="Ex: Ben Salah"
+                [(ngModel)]="userData.nom"
+                required
+                #nomField="ngModel"
+                [ngClass]="{ 'is-invalid': nomField.invalid && (nomField.dirty || nomField.touched) }"
+              />
+              <div *ngIf="nomField.invalid && (nomField.dirty || nomField.touched)" class="invalid-feedback">
+                Le nom est requis.
+              </div>
+            </div>
+
+            <!-- Prénom -->
+            <div class="col-md-6">
+              <label for="prenom" class="form-label fw-semibold">Prénom <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                id="prenom"
+                name="prenom"
+                class="form-control"
+                placeholder="Ex: Ahmed"
+                [(ngModel)]="userData.prenom"
+                required
+                #prenomField="ngModel"
+                [ngClass]="{ 'is-invalid': prenomField.invalid && (prenomField.dirty || prenomField.touched) }"
+              />
+              <div *ngIf="prenomField.invalid && (prenomField.dirty || prenomField.touched)" class="invalid-feedback">
+                Le prénom est requis.
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+              <label for="email" class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control"
+                placeholder="ahmed@crm.tn"
+                [(ngModel)]="userData.email"
+                required
+                email
+                #emailField="ngModel"
+                [ngClass]="{ 'is-invalid': emailField.invalid && (emailField.dirty || emailField.touched) }"
+              />
+              <div *ngIf="emailField.invalid && (emailField.dirty || emailField.touched)" class="invalid-feedback">
+                Email valide requis.
+              </div>
+            </div>
+
+            <!-- Login -->
+            <div class="col-md-6">
+              <label for="login" class="form-label fw-semibold">Identifiant (Login) <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                id="login"
+                name="login"
+                class="form-control"
+                placeholder="Ex: ahmed"
+                [(ngModel)]="userData.login"
+                required
+                minlength="3"
+                #loginField="ngModel"
+                [ngClass]="{ 'is-invalid': loginField.invalid && (loginField.dirty || loginField.touched) }"
+              />
+              <div *ngIf="loginField.invalid && (loginField.dirty || loginField.touched)" class="invalid-feedback">
+                Min. 3 caractères requis.
+              </div>
+            </div>
+
+            <!-- Téléphone -->
+            <div class="col-md-6">
+              <label for="telephone" class="form-label fw-semibold">Téléphone <span class="text-danger">*</span></label>
+              <input
+                type="tel"
+                id="telephone"
+                name="telephone"
+                class="form-control"
+                placeholder="+216 20 111 222"
+                [(ngModel)]="userData.telephone"
+                required
+                #telField="ngModel"
+                [ngClass]="{ 'is-invalid': telField.invalid && (telField.dirty || telField.touched) }"
+              />
+              <div *ngIf="telField.invalid && (telField.dirty || telField.touched)" class="invalid-feedback">
+                Le téléphone est requis.
+              </div>
+            </div>
+
+            <!-- Rôle -->
+            <div class="col-md-6">
+              <label for="roleId" class="form-label fw-semibold">Rôle attribué <span class="text-danger">*</span></label>
+              <select
+                id="roleId"
+                name="roleId"
+                class="form-select"
+                [(ngModel)]="userData.roleId"
+                required
+              >
+                <option [ngValue]="1">Administrateur (ADMIN)</option>
+                <option [ngValue]="2">Agent CRM (AGENT_CRM)</option>
+              </select>
+            </div>
+
+            <!-- Mot de passe -->
+            <div class="col-12">
+              <label for="password" class="form-label fw-semibold">
+                Mot de passe
+                <span *ngIf="!isEditMode" class="text-danger">*</span>
+                <small *ngIf="isEditMode" class="text-muted fw-normal">(laisser vide pour conserver le mot de passe actuel)</small>
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-control"
+                placeholder="••••••••"
+                [(ngModel)]="userData.password"
+                [required]="!isEditMode"
+                minlength="6"
+              />
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+            <a routerLink="/users" class="btn btn-outline-secondary px-4">Annuler</a>
+            <button
+              type="submit"
+              class="btn btn-danger px-4 d-flex align-items-center gap-2"
+              [disabled]="isSaving || userForm.invalid"
+            >
+              <span *ngIf="isSaving" class="spinner-border spinner-border-sm" role="status"></span>
+              <i *ngIf="!isSaving" class="bi bi-check-lg"></i>
+              <span>{{ isSaving ? 'Enregistrement...' : (isEditMode ? 'Enregistrer les modifications' : "Créer l'utilisateur") }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

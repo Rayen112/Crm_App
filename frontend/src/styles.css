@@ -1,0 +1,129 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+:root {
+  --crm-primary: #1e3a8a;
+  --crm-primary-hover: #172554;
+  --crm-secondary: #0ea5e9;
+  --crm-bg: #f8fafc;
+  --crm-card-border: #e2e8f0;
+}
+
+body {
+  background-color: var(--crm-bg);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #1e293b;
+  min-height: 100vh;
+}
+
+/* Modern Card Styling */
+.card-crm {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid var(--crm-card-border);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+  transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.card-crm:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+/* Stat Cards */
+.stat-card {
+  border-radius: 14px;
+  border: none;
+  padding: 1.5rem;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.stat-card.bg-stat-total {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.stat-card.bg-stat-open {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.stat-card.bg-stat-closed {
+  background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+}
+
+.stat-card.bg-stat-users {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+}
+
+/* Priority Badges */
+.badge-priority-FAIBLE {
+  background-color: #e2e8f0;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.badge-priority-MOYENNE {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.badge-priority-HAUTE {
+  background-color: #ffedd5;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+
+.badge-priority-CRITIQUE {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  font-weight: 600;
+}
+
+/* Status Badges */
+.badge-status-NOUVEAU {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.badge-status-EN_COURS {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+.badge-status-EN_ATTENTE {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.badge-status-RESOLU {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.badge-status-FERME {
+  background-color: #f1f5f9;
+  color: #64748b;
+}
+
+/* Tables */
+.table-crm thead th {
+  background-color: #f1f5f9;
+  color: #475569;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.table-crm tbody td {
+  padding: 0.85rem 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.table-crm tbody tr:hover {
+  background-color: #f8fafc;
+}

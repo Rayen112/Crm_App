@@ -1,0 +1,100 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card card-crm border-0 shadow-lg p-4 p-md-5">
+        <div class="text-center mb-4">
+          <div class="avatar-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+            <i class="bi bi-shield-lock-fill fs-2"></i>
+          </div>
+          <h2 class="fw-bold text-dark mb-1">Connexion CRM</h2>
+          <p class="text-muted small">Accédez à votre espace de gestion des réclamations</p>
+        </div>
+
+        <!-- Alert Error Message -->
+        <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2" role="alert">
+          <i class="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
+          <div>{{ errorMessage }}</div>
+        </div>
+
+        <!-- Form -->
+        <form (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
+          <!-- Identifiant / Email -->
+          <div class="mb-3">
+            <label for="loginInput" class="form-label fw-semibold">
+              Identifiant ou Email <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light text-muted">
+                <i class="bi bi-person"></i>
+              </span>
+              <input
+                type="text"
+                id="loginInput"
+                name="login"
+                class="form-control"
+                placeholder="Ex: ahmed ou ahmed@crm.tn"
+                [(ngModel)]="loginData.login"
+                required
+                #loginField="ngModel"
+                [ngClass]="{ 'is-invalid': loginField.invalid && (loginField.dirty || loginField.touched) }"
+              />
+            </div>
+            <div *ngIf="loginField.invalid && (loginField.dirty || loginField.touched)" class="invalid-feedback d-block">
+              L'identifiant ou email est requis.
+            </div>
+          </div>
+
+          <!-- Mot de passe masqué avec bouton afficher/masquer -->
+          <div class="mb-4">
+            <label for="passwordInput" class="form-label fw-semibold">
+              Mot de passe <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light text-muted">
+                <i class="bi bi-lock"></i>
+              </span>
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                id="passwordInput"
+                name="password"
+                class="form-control"
+                placeholder="••••••••"
+                [(ngModel)]="loginData.password"
+                required
+                #passwordField="ngModel"
+                [ngClass]="{ 'is-invalid': passwordField.invalid && (passwordField.dirty || passwordField.touched) }"
+              />
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="togglePasswordVisibility()"
+                title="Afficher/Masquer le mot de passe"
+              >
+                <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+              </button>
+            </div>
+            <div *ngIf="passwordField.invalid && (passwordField.dirty || passwordField.touched)" class="invalid-feedback d-block">
+              Le mot de passe est requis.
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            class="btn btn-primary w-100 py-2 fw-semibold d-flex align-items-center justify-content-center gap-2"
+            [disabled]="isLoading || loginForm.invalid"
+          >
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <i *ngIf="!isLoading" class="bi bi-box-arrow-in-right"></i>
+            <span>{{ isLoading ? 'Connexion en cours...' : 'Se connecter' }}</span>
+          </button>
+        </form>
+
+        <div class="text-center mt-4 pt-3 border-top">
+          <span class="text-muted small">Vous n'avez pas de compte ? </span>
+          <a routerLink="/register" class="fw-semibold text-decoration-none">Créer un compte</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

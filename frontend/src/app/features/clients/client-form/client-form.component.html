@@ -1,0 +1,136 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/clients" class="text-decoration-none">Clients</a></li>
+          <li class="breadcrumb-item active" aria-current="page">
+            {{ isEditMode ? 'Modifier client' : 'Nouveau client' }}
+          </li>
+        </ol>
+      </nav>
+
+      <!-- Form Card -->
+      <div class="card card-crm border-0 shadow-sm p-4 p-md-5">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+          <div>
+            <h2 class="h4 fw-bold text-dark mb-1">
+              <i class="bi me-2 text-success" [ngClass]="isEditMode ? 'bi-building-check' : 'bi-building-add'"></i>
+              {{ isEditMode ? 'Modifier la fiche client' : 'Ajouter un nouveau client' }}
+            </h2>
+            <p class="text-muted small mb-0">Renseignez les coordonnées de l'entreprise ou du particulier.</p>
+          </div>
+          <a routerLink="/clients" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Retour
+          </a>
+        </div>
+
+        <!-- Alert Error -->
+        <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2" role="alert">
+          <i class="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
+          <div>{{ errorMessage }}</div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="isLoading" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="text-muted mt-2">Chargement du client...</p>
+        </div>
+
+        <form *ngIf="!isLoading" (ngSubmit)="onSubmit()" #clientForm="ngForm" novalidate>
+          <div class="row g-3">
+            <!-- Raison Sociale -->
+            <div class="col-12">
+              <label for="raisonSociale" class="form-label fw-semibold">Raison Sociale / Entreprise</label>
+              <input
+                type="text"
+                id="raisonSociale"
+                name="raisonSociale"
+                class="form-control"
+                placeholder="Ex: Tech Solutions SARL (optionnel si particulier)"
+                maxlength="150"
+                [(ngModel)]="clientData.raisonSociale"
+              />
+            </div>
+
+            <!-- Nom du Contact -->
+            <div class="col-12">
+              <label for="nom" class="form-label fw-semibold">Nom du Contact <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                id="nom"
+                name="nom"
+                class="form-control"
+                placeholder="Ex: Sonia Trabelsi"
+                maxlength="100"
+                [(ngModel)]="clientData.nom"
+                required
+                #nomField="ngModel"
+                [ngClass]="{ 'is-invalid': nomField.invalid && (nomField.dirty || nomField.touched) }"
+              />
+              <div *ngIf="nomField.invalid && (nomField.dirty || nomField.touched)" class="invalid-feedback">
+                Le nom du contact est obligatoire.
+              </div>
+            </div>
+
+            <!-- Téléphone -->
+            <div class="col-md-6">
+              <label for="telephone" class="form-label fw-semibold">Téléphone <span class="text-danger">*</span></label>
+              <input
+                type="tel"
+                id="telephone"
+                name="telephone"
+                class="form-control"
+                placeholder="+216 22 456 789"
+                maxlength="30"
+                [(ngModel)]="clientData.telephone"
+                required
+                #telField="ngModel"
+                [ngClass]="{ 'is-invalid': telField.invalid && (telField.dirty || telField.touched) }"
+              />
+              <div *ngIf="telField.invalid && (telField.dirty || telField.touched)" class="invalid-feedback">
+                Le téléphone est obligatoire.
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+              <label for="email" class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control"
+                placeholder="contact@client.tn"
+                maxlength="150"
+                [(ngModel)]="clientData.email"
+                required
+                email
+                #emailField="ngModel"
+                [ngClass]="{ 'is-invalid': emailField.invalid && (emailField.dirty || emailField.touched) }"
+              />
+              <div *ngIf="emailField.invalid && (emailField.dirty || emailField.touched)" class="invalid-feedback">
+                Un email valide est obligatoire.
+              </div>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+            <a routerLink="/clients" class="btn btn-outline-secondary px-4">Annuler</a>
+            <button
+              type="submit"
+              class="btn btn-success px-4 d-flex align-items-center gap-2"
+              [disabled]="isSaving || clientForm.invalid"
+            >
+              <span *ngIf="isSaving" class="spinner-border spinner-border-sm" role="status"></span>
+              <i *ngIf="!isSaving" class="bi bi-check-lg"></i>
+              <span>{{ isSaving ? 'Enregistrement...' : (isEditMode ? 'Enregistrer les modifications' : 'Créer le Client') }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

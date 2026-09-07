@@ -1,0 +1,165 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <!-- Breadcrumb navigation -->
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/tickets" class="text-decoration-none">Tickets</a></li>
+          <li class="breadcrumb-item active" aria-current="page">
+            {{ isEditMode ? 'Modifier ' + ticketRef : 'Nouveau Ticket' }}
+          </li>
+        </ol>
+      </nav>
+
+      <!-- Main Form Card -->
+      <div class="card card-crm border-0 shadow-sm p-4 p-md-5">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+          <div>
+            <h2 class="h4 fw-bold text-dark mb-1">
+              <i class="bi me-2 text-primary" [ngClass]="isEditMode ? 'bi-pencil-square' : 'bi-plus-circle-fill'"></i>
+              {{ isEditMode ? 'Modifier le Ticket ' + ticketRef : 'Créer un nouveau Ticket' }}
+            </h2>
+            <p class="text-muted small mb-0">Renseignez les détails de la réclamation client.</p>
+          </div>
+          <a routerLink="/tickets" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Retour
+          </a>
+        </div>
+
+        <!-- Alert Error -->
+        <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2" role="alert">
+          <i class="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
+          <div>{{ errorMessage }}</div>
+        </div>
+
+        <!-- Loading spinner if fetching ticket -->
+        <div *ngIf="isLoading" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="text-muted mt-2">Chargement du ticket...</p>
+        </div>
+
+        <form *ngIf="!isLoading" (ngSubmit)="onSubmit()" #ticketForm="ngForm" novalidate>
+          <div class="row g-3">
+            <!-- Client Selection -->
+            <div class="col-md-6">
+              <label for="clientId" class="form-label fw-semibold">Client <span class="text-danger">*</span></label>
+              <select
+                id="clientId"
+                name="clientId"
+                class="form-select"
+                [(ngModel)]="ticketData.clientId"
+                required
+                #clientField="ngModel"
+                [ngClass]="{ 'is-invalid': clientField.invalid && (clientField.dirty || clientField.touched) }"
+              >
+                <option [ngValue]="0" disabled>-- Sélectionner un client --</option>
+                <option *ngFor="let c of clients" [value]="c.id">
+                  {{ c.raisonSociale ? c.raisonSociale + ' (' + c.nom + ')' : c.nom }}
+                </option>
+              </select>
+              <div *ngIf="clientField.invalid && (clientField.dirty || clientField.touched)" class="invalid-feedback">
+                La sélection d'un client est obligatoire.
+              </div>
+            </div>
+
+            <!-- Priorité -->
+            <div class="col-md-3">
+              <label for="priorite" class="form-label fw-semibold">Priorité <span class="text-danger">*</span></label>
+              <select
+                id="priorite"
+                name="priorite"
+                class="form-select"
+                [(ngModel)]="ticketData.priorite"
+                required
+              >
+                <option *ngFor="let p of priorities" [value]="p.value">{{ p.label }}</option>
+              </select>
+            </div>
+
+            <!-- Statut -->
+            <div class="col-md-3">
+              <label for="statut" class="form-label fw-semibold">Statut <span class="text-danger">*</span></label>
+              <select
+                id="statut"
+                name="statut"
+                class="form-select"
+                [(ngModel)]="ticketData.statut"
+                required
+              >
+                <option *ngFor="let s of statuses" [value]="s.value">{{ s.label }}</option>
+              </select>
+            </div>
+
+            <!-- Objet -->
+            <div class="col-12">
+              <label for="objet" class="form-label fw-semibold">Objet de la réclamation <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                id="objet"
+                name="objet"
+                class="form-control"
+                placeholder="Ex: Problème d'accès à la plateforme"
+                maxlength="200"
+                [(ngModel)]="ticketData.objet"
+                required
+                #objetField="ngModel"
+                [ngClass]="{ 'is-invalid': objetField.invalid && (objetField.dirty || objetField.touched) }"
+              />
+              <div *ngIf="objetField.invalid && (objetField.dirty || objetField.touched)" class="invalid-feedback">
+                L'objet est obligatoire (max 200 caractères).
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="col-12">
+              <label for="description" class="form-label fw-semibold">Description détaillée <span class="text-danger">*</span></label>
+              <textarea
+                id="description"
+                name="description"
+                rows="5"
+                class="form-control"
+                placeholder="Décrivez précisément le problème rencontré par le client..."
+                [(ngModel)]="ticketData.description"
+                required
+                #descField="ngModel"
+                [ngClass]="{ 'is-invalid': descField.invalid && (descField.dirty || descField.touched) }"
+              ></textarea>
+              <div *ngIf="descField.invalid && (descField.dirty || descField.touched)" class="invalid-feedback">
+                La description est obligatoire.
+              </div>
+            </div>
+
+            <!-- User Assignment (si Admin) -->
+            <div class="col-md-6" *ngIf="authService.isAdmin() && users.length > 0">
+              <label for="userId" class="form-label fw-semibold">Assigné à l'agent</label>
+              <select
+                id="userId"
+                name="userId"
+                class="form-select"
+                [(ngModel)]="ticketData.userId"
+              >
+                <option *ngFor="let u of users" [value]="u.id">
+                  {{ u.prenom }} {{ u.nom }} ({{ u.login }})
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Actions buttons -->
+          <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+            <a routerLink="/tickets" class="btn btn-outline-secondary px-4">Annuler</a>
+            <button
+              type="submit"
+              class="btn btn-primary px-4 d-flex align-items-center gap-2"
+              [disabled]="isSaving || ticketForm.invalid"
+            >
+              <span *ngIf="isSaving" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              <i *ngIf="!isSaving" class="bi bi-check-lg"></i>
+              <span>{{ isSaving ? 'Enregistrement...' : (isEditMode ? 'Mettre à jour' : 'Créer le Ticket') }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

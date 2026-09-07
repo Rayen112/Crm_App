@@ -1,0 +1,161 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/tickets" class="text-decoration-none">Tickets</a></li>
+          <li class="breadcrumb-item active" aria-current="page">
+            {{ ticket?.reference || 'Détail du ticket' }}
+          </li>
+        </ol>
+      </nav>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="text-muted mt-2">Chargement des informations...</p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="errorMessage" class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <div>{{ errorMessage }}</div>
+      </div>
+
+      <!-- Main Ticket Card -->
+      <div *ngIf="!isLoading && ticket" class="card card-crm border-0 shadow-sm overflow-hidden mb-4">
+        <!-- Card Header with Badges & Reference -->
+        <div class="card-header bg-white p-4 border-bottom d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="badge bg-dark font-monospace fs-6 px-3 py-1">{{ ticket.reference }}</span>
+              <span class="badge px-3 py-1" [ngClass]="'badge-priority-' + ticket.priorite">
+                Priorité : {{ formatPriority(ticket.priorite) }}
+              </span>
+              <span class="badge px-3 py-1" [ngClass]="'badge-status-' + ticket.statut">
+                Statut : {{ formatStatus(ticket.statut) }}
+              </span>
+            </div>
+            <h1 class="h4 fw-bold text-dark mb-0">{{ ticket.objet }}</h1>
+          </div>
+
+          <!-- Actions -->
+          <div class="d-flex gap-2">
+            <a [routerLink]="['/tickets', ticket.id, 'edit']" class="btn btn-primary d-flex align-items-center gap-1">
+              <i class="bi bi-pencil"></i>
+              <span>Modifier</span>
+            </a>
+            <button
+              *ngIf="authService.isAdmin()"
+              type="button"
+              class="btn btn-outline-danger d-flex align-items-center gap-1"
+              (click)="deleteTicket()"
+            >
+              <i class="bi bi-trash"></i>
+              <span>Supprimer</span>
+            </button>
+            <a routerLink="/tickets" class="btn btn-outline-secondary">
+              <i class="bi bi-arrow-left"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="card-body p-4">
+          <div class="row g-4">
+            <!-- Left Column: Description -->
+            <div class="col-lg-8">
+              <h5 class="fw-bold text-dark mb-3">
+                <i class="bi bi-file-text me-2 text-primary"></i>Description de la réclamation
+              </h5>
+              <div class="p-3 bg-light rounded-3 text-secondary" style="white-space: pre-wrap; line-height: 1.6; min-height: 150px;">
+                {{ ticket.description }}
+              </div>
+
+              <!-- Quick Status Change Bar -->
+              <div class="mt-4 p-3 border rounded-3 bg-white">
+                <div class="fw-semibold text-dark mb-2 small text-uppercase">
+                  <i class="bi bi-arrow-left-right me-1 text-muted"></i>Changer rapidement le statut :
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    class="btn btn-sm"
+                    [ngClass]="ticket.statut === 'NOUVEAU' ? 'btn-primary' : 'btn-outline-primary'"
+                    (click)="changeStatus('NOUVEAU')"
+                  >Nouveau</button>
+                  <button
+                    type="button"
+                    class="btn btn-sm"
+                    [ngClass]="ticket.statut === 'EN_COURS' ? 'btn-info text-white' : 'btn-outline-info'"
+                    (click)="changeStatus('EN_COURS')"
+                  >En cours</button>
+                  <button
+                    type="button"
+                    class="btn btn-sm"
+                    [ngClass]="ticket.statut === 'EN_ATTENTE' ? 'btn-warning text-dark' : 'btn-outline-warning'"
+                    (click)="changeStatus('EN_ATTENTE')"
+                  >En attente</button>
+                  <button
+                    type="button"
+                    class="btn btn-sm"
+                    [ngClass]="ticket.statut === 'RESOLU' ? 'btn-success' : 'btn-outline-success'"
+                    (click)="changeStatus('RESOLU')"
+                  >Résolu</button>
+                  <button
+                    type="button"
+                    class="btn btn-sm"
+                    [ngClass]="ticket.statut === 'FERME' ? 'btn-secondary' : 'btn-outline-secondary'"
+                    (click)="changeStatus('FERME')"
+                  >Fermé</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Meta info, Client & Agent -->
+            <div class="col-lg-4">
+              <!-- Client Information Box -->
+              <div class="card bg-light border-0 p-3 mb-3 rounded-3">
+                <h6 class="fw-bold text-dark mb-2">
+                  <i class="bi bi-building me-2 text-primary"></i>Client
+                </h6>
+                <div class="fw-semibold text-dark">{{ client?.raisonSociale || ticket.clientName || 'Client' }}</div>
+                <div class="text-muted small" *ngIf="client?.nom">Contact : {{ client?.nom }}</div>
+                <div class="text-muted small" *ngIf="client?.email">
+                  <i class="bi bi-envelope me-1"></i>{{ client?.email }}
+                </div>
+                <div class="text-muted small" *ngIf="client?.telephone">
+                  <i class="bi bi-telephone me-1"></i>{{ client?.telephone }}
+                </div>
+              </div>
+
+              <!-- Agent / User Box -->
+              <div class="card bg-light border-0 p-3 mb-3 rounded-3">
+                <h6 class="fw-bold text-dark mb-2">
+                  <i class="bi bi-person-badge me-2 text-primary"></i>Agent Assigné
+                </h6>
+                <div class="fw-semibold text-dark">{{ ticket.userName || 'Agent #' + ticket.userId }}</div>
+                <small class="text-muted">Utilisateur responsable de la résolution</small>
+              </div>
+
+              <!-- Timestamps Box -->
+              <div class="card bg-light border-0 p-3 rounded-3">
+                <h6 class="fw-bold text-dark mb-2">
+                  <i class="bi bi-clock-history me-2 text-primary"></i>Historique
+                </h6>
+                <div class="small mb-1">
+                  <span class="text-muted">Date de création :</span>
+                  <div class="fw-semibold">{{ ticket.dateCreation | date : 'dd/MM/yyyy à HH:mm:ss' }}</div>
+                </div>
+                <div class="small" *ngIf="ticket.dateModification">
+                  <span class="text-muted">Dernière mise à jour :</span>
+                  <div class="fw-semibold">{{ ticket.dateModification | date : 'dd/MM/yyyy à HH:mm:ss' }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

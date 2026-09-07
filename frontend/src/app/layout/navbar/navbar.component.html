@@ -1,0 +1,85 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+  <div class="container-fluid px-4">
+    <!-- Brand -->
+    <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-white" routerLink="/dashboard">
+      <i class="bi bi-ticket-detailed-fill text-primary fs-4"></i>
+      <span>CRM Tickets</span>
+    </a>
+
+    <!-- Mobile toggle -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#crmNavbarContent"
+      aria-controls="crmNavbarContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navigation links -->
+    <div class="collapse navbar-collapse" id="crmNavbarContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0" *ngIf="authService.isAuthenticated()">
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center gap-1" routerLink="/dashboard" routerLinkActive="active">
+            <i class="bi bi-speedometer2"></i>
+            <span>Tableau de bord</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center gap-1" routerLink="/tickets" routerLinkActive="active">
+            <i class="bi bi-ticket-perforated"></i>
+            <span>Tickets</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center gap-1" routerLink="/clients" routerLinkActive="active">
+            <i class="bi bi-people"></i>
+            <span>Clients</span>
+          </a>
+        </li>
+        <li class="nav-item" *ngIf="authService.isAdmin()">
+          <a class="nav-link d-flex align-items-center gap-1" routerLink="/users" routerLinkActive="active">
+            <i class="bi bi-person-gear"></i>
+            <span>Utilisateurs</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- User Profile & Logout -->
+      <div class="d-flex align-items-center gap-3 ms-auto" *ngIf="authService.isAuthenticated()">
+        <div class="text-end text-light">
+          <div class="fw-semibold small d-flex align-items-center gap-1 justify-content-end">
+            <i class="bi bi-person-circle"></i>
+            <span>{{ authService.userLogin() }}</span>
+          </div>
+          <span
+            class="badge text-uppercase"
+            [ngClass]="authService.isAdmin() ? 'bg-danger' : 'bg-primary'"
+            style="font-size: 0.7rem;"
+          >
+            {{ authService.userRole() === 'ADMIN' ? 'Administrateur' : 'Agent CRM' }}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-outline-light btn-sm d-flex align-items-center gap-1"
+          (click)="logout()"
+          title="Déconnexion"
+        >
+          <i class="bi bi-box-arrow-right"></i>
+          <span class="d-none d-md-inline">Déconnexion</span>
+        </button>
+      </div>
+
+      <!-- Links when disconnected -->
+      <div class="d-flex align-items-center gap-2 ms-auto" *ngIf="!authService.isAuthenticated()">
+        <a routerLink="/login" class="btn btn-outline-light btn-sm">Connexion</a>
+        <a routerLink="/register" class="btn btn-primary btn-sm">Inscription</a>
+      </div>
+    </div>
+  </div>
+</nav>

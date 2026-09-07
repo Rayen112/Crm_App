@@ -1,0 +1,102 @@
+<div class="container-fluid px-4 py-4">
+  <!-- Page Header -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="h3 fw-bold text-dark mb-1">
+        <i class="bi bi-people text-success me-2"></i>Gestion des Clients
+      </h1>
+      <p class="text-muted mb-0">Consultez l'annuaire des clients et mettez à jour leurs coordonnées.</p>
+    </div>
+    <div>
+      <a routerLink="/clients/new" class="btn btn-success d-flex align-items-center gap-2">
+        <i class="bi bi-plus-lg"></i>
+        <span>Nouveau Client</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2" role="alert">
+    <i class="bi bi-check-circle-fill flex-shrink-0"></i>
+    <div>{{ successMessage }}</div>
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2" role="alert">
+    <i class="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
+    <div>{{ errorMessage }}</div>
+  </div>
+
+  <!-- Clients Table Card -->
+  <div class="card card-crm border-0 shadow-sm overflow-hidden">
+    <div class="table-responsive">
+      <table class="table table-crm mb-0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Raison Sociale</th>
+            <th>Nom du Contact</th>
+            <th>Téléphone</th>
+            <th>Email</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Loading -->
+          <tr *ngIf="isLoading">
+            <td colspan="6" class="text-center py-5 text-muted">
+              <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+              Chargement des clients...
+            </td>
+          </tr>
+
+          <!-- Empty -->
+          <tr *ngIf="!isLoading && clients.length === 0">
+            <td colspan="6" class="text-center py-5 text-muted">
+              <i class="bi bi-person-x fs-1 d-block mb-2 text-secondary"></i>
+              Aucun client enregistré.
+            </td>
+          </tr>
+
+          <!-- Rows -->
+          <tr *ngFor="let c of clients">
+            <td class="text-muted fw-bold">#{{ c.id }}</td>
+            <td>
+              <div class="fw-semibold text-dark">
+                {{ c.raisonSociale || 'Particulier' }}
+              </div>
+            </td>
+            <td>
+              <span class="text-dark">{{ c.nom }}</span>
+            </td>
+            <td>
+              <span class="text-muted">
+                <i class="bi bi-telephone me-1" *ngIf="c.telephone"></i>{{ c.telephone || '-' }}
+              </span>
+            </td>
+            <td>
+              <a *ngIf="c.email" [href]="'mailto:' + c.email" class="text-decoration-none text-secondary">
+                <i class="bi bi-envelope me-1"></i>{{ c.email }}
+              </a>
+              <span *ngIf="!c.email" class="text-muted">-</span>
+            </td>
+            <td class="text-end">
+              <div class="btn-group btn-group-sm">
+                <a [routerLink]="['/clients', c.id, 'edit']" class="btn btn-outline-primary" title="Modifier">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <button
+                  *ngIf="authService.isAdmin()"
+                  type="button"
+                  class="btn btn-outline-danger"
+                  (click)="deleteClient(c)"
+                  title="Supprimer"
+                >
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
