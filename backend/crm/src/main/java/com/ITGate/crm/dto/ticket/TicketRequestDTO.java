@@ -33,6 +33,5 @@ public class TicketRequestDTO {
     @NotNull(message = "Le client est obligatoire")
     private Long clientId;
 
-    @NotNull(message = "L'utilisateur est obligatoire")
     private Long userId;
 }

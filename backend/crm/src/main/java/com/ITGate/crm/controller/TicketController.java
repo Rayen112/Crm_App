@@ -156,7 +156,7 @@ public class TicketController {
     // =========================
 
     @GetMapping("/user/{userId}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'AGENT_CRM')")
     public ResponseEntity<List<TicketResponseDTO>> getTicketsByUser(
             @PathVariable Long userId) {
 

@@ -87,6 +87,14 @@ export class TicketFormComponent implements OnInit {
   }
 
   loadUsers(): void {
+    if (!this.authService.isAdmin()) {
+      const myId = this.authService.currentUserId();
+      if (myId) {
+        this.ticketData.userId = myId;
+      }
+      return;
+    }
+
     this.userService.getAllUsers().subscribe({
       next: (data) => {
         this.users = data;
@@ -97,8 +105,10 @@ export class TicketFormComponent implements OnInit {
         }
       },
       error: () => {
-        // En cas de non-droit (Agent), on peut par défaut utiliser 1
-        this.ticketData.userId = 1;
+        const myId = this.authService.currentUserId();
+        if (myId) {
+          this.ticketData.userId = myId;
+        }
       },
     });
   }
@@ -159,3 +169,4 @@ export class TicketFormComponent implements OnInit {
     }
   }
 }
+

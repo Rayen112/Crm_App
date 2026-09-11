@@ -18,6 +18,7 @@ export class AuthService {
   readonly isAdmin = computed(() => this.currentUserSignal()?.role === 'ADMIN');
   readonly userRole = computed(() => this.currentUserSignal()?.role ?? '');
   readonly userLogin = computed(() => this.currentUserSignal()?.login ?? '');
+  readonly currentUserId = computed(() => this.currentUserSignal()?.id ?? null);
 
   constructor(private http: HttpClient) {}
 
@@ -25,6 +26,10 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((res) => {
         const user: CurrentUser = {
+          id: res.id,
+          nom: res.nom,
+          prenom: res.prenom,
+          email: res.email,
           login: res.login,
           role: res.role,
           token: res.token,
@@ -38,6 +43,10 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.apiUrl}/register`, data).pipe(
       tap((res) => {
         const user: CurrentUser = {
+          id: res.id,
+          nom: res.nom,
+          prenom: res.prenom,
+          email: res.email,
           login: res.login,
           role: res.role,
           token: res.token,
@@ -72,3 +81,4 @@ export class AuthService {
     }
   }
 }
+

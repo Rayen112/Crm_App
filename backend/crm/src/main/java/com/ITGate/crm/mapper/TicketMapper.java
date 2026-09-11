@@ -19,11 +19,14 @@ public interface TicketMapper {
     Ticket toTicket(TicketRequestDTO dto);
 
     @Mapping(target = "clientId", source = "client.id")
-    @Mapping(target = "clientName", source = "client.raisonSociale")
+    @Mapping(
+            target = "clientName",
+            expression = "java(ticket.getClient() != null ? (ticket.getClient().getRaisonSociale() != null && !ticket.getClient().getRaisonSociale().isBlank() ? ticket.getClient().getRaisonSociale() : ticket.getClient().getNom()) : null)"
+    )
     @Mapping(target = "userId", source = "user.id")
     @Mapping(
             target = "userName",
-            expression = "java(ticket.getUser().getPrenom() + \" \" + ticket.getUser().getNom())"
+            expression = "java(ticket.getUser() != null ? ticket.getUser().getPrenom() + \" \" + ticket.getUser().getNom() : null)"
     )
     TicketResponseDTO toTicketResponseDTO(Ticket ticket);
 
@@ -38,3 +41,4 @@ public interface TicketMapper {
             @MappingTarget Ticket ticket
     );
 }
+

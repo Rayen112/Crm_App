@@ -39,7 +39,7 @@ public class ClientService {
                                 HttpStatus.NOT_FOUND,
                                 "Client not found with id: " + id
                         )
-                );;
+                );
 
         return clientMapper.toClientResponseDTO(client);
     }

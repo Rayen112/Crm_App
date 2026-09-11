@@ -33,9 +33,8 @@ public class UserRequestDTO {
             message = "Le login doit contenir entre 3 et 100 caractères")
     private String login;
 
-    @NotBlank(message = "Le mot de passe est obligatoire")
-    @Size(min = 6, max = 255,
-            message = "Le mot de passe doit contenir entre 6 et 255 caractères")
+    @Size(max = 255,
+            message = "Le mot de passe ne doit pas dépasser 255 caractères")
     private String password;
 
     @NotBlank(message = "Le téléphone est obligatoire")

@@ -1,0 +1,2 @@
+[0907/104507.549:ERROR:third_party\crashpad\crashpad\util\win\registration_protocol_win.cc:136] TransactNamedPipe: Le canal de communication a été fermé. (0x6D)
+[0909/175504.882:ERROR:third_party\crashpad\crashpad\util\win\registration_protocol_win.cc:136] TransactNamedPipe: Le canal de communication a été fermé. (0x6D)

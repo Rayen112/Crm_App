@@ -64,15 +64,35 @@ public class TicketService {
                 .orElseThrow(() ->
                         new ResponseStatusException(
                                 HttpStatus.NOT_FOUND,
-                                "Client not found "
+                                "Client not found with id: " + request.getClientId()
                         )
                 );
 
-        User user = userRepository.findById(request.getUserId())
+        Long userId = request.getUserId();
+        if (userId == null || userId <= 0) {
+            org.springframework.security.core.Authentication auth =
+                    org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+                User currentUser = userRepository.findByLogin(auth.getName()).orElse(null);
+                if (currentUser != null) {
+                    userId = currentUser.getId();
+                }
+            }
+        }
+
+        if (userId == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "L'utilisateur assigné au ticket est obligatoire"
+            );
+        }
+
+        final Long targetUserId = userId;
+        User user = userRepository.findById(targetUserId)
                 .orElseThrow(() ->
                         new ResponseStatusException(
                                 HttpStatus.NOT_FOUND,
-                                "User not found "
+                                "User not found with id: " + targetUserId
                         )
                 );
 

@@ -55,6 +55,10 @@ public class AuthService {
         );
         return new LoginResponseDTO(
                 "Login successful",
+                user.getId(),
+                user.getNom(),
+                user.getPrenom(),
+                user.getEmail(),
                 user.getLogin(),
                 user.getRole().getName().name(),
                 token
@@ -95,6 +99,10 @@ public class AuthService {
 
         return new LoginResponseDTO(
                 "Inscription réussie",
+                savedUser.getId(),
+                savedUser.getNom(),
+                savedUser.getPrenom(),
+                savedUser.getEmail(),
                 savedUser.getLogin(),
                 savedUser.getRole().getName().name(),
                 token

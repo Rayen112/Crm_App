@@ -1,14 +1,15 @@
 export interface Client {
   id: number;
-  raisonSociale: string;
+  raisonSociale?: string;
   nom: string;
   telephone: string;
   email: string;
 }
 
 export interface ClientRequest {
-  raisonSociale: string;
+  raisonSociale?: string;
   nom: string;
   telephone: string;
   email: string;
 }
+

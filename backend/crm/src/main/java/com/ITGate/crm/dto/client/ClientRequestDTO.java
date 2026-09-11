@@ -14,7 +14,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ClientRequestDTO {
 
-    @NotBlank(message = "La raison sociale est obligatoire")
     @Size(max = 150,
             message = "La raison sociale ne doit pas dépasser 150 caractères")
     private String raisonSociale;
