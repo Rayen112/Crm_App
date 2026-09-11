@@ -75,7 +75,7 @@ Avant de lancer le projet, assurez-vous d'avoir installé sur votre machine :
    ```properties
    spring.datasource.url=jdbc:mysql://localhost:3306/crm_ticket_managemnet
    spring.datasource.username=root
-   spring.datasource.password=VOTRE_MOT_DE_PASSE
+   spring.datasource.password=MyPassword!
    ```
 
 ---
@@ -121,7 +121,7 @@ Les comptes pré-configurés dans le script SQL sont :
 
 | Rôle | Identifiant (Login) | Mot de passe | Description |
 | :--- | :--- | :--- | :--- |
-| **Administrateur** | `ahmed` | `password123` | Accès complet (Tickets, Clients, Gestion Utilisateurs) |
+| **Administrateur** | `admin` | `admin123` | Accès complet (Tickets, Clients, Gestion Utilisateurs) |
 | **Agent CRM** | `sonia` | `password123` | Gestion des tickets et consultation clients |
 | **Agent CRM** | `mohamed` | `password123` | Gestion des tickets et consultation clients |
 | **Agent CRM** | `yassine` | `password123` | Gestion des tickets et consultation clients |
